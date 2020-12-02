@@ -1,0 +1,49 @@
+{
+    "name": "root",
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1606885816",
+        "python_version": "3.8.5 (default, Jul 21 2020, 10:48:26) \n[Clang 11.0.3 (clang-1103.0.32.62)]",
+        "command_line_arguments": "/Users/macbook/personal_work/python_venvs/UnityMLAgentsEnv/bin/mlagents-learn ../RobotPathFinder.yaml --run-id=Run05 --resume",
+        "mlagents_version": "0.22.0",
+        "mlagents_envs_version": "0.22.0",
+        "communication_protocol_version": "1.2.0",
+        "pytorch_version": "1.7.0",
+        "numpy_version": "1.19.4",
+        "end_time_seconds": "1606885827"
+    },
+    "total": 11.574237289000001,
+    "count": 1,
+    "self": 0.18497480800000154,
+    "children": {
+        "run_training.setup": {
+            "total": 0.052455972000000184,
+            "count": 1,
+            "self": 0.052455972000000184
+        },
+        "TrainerController.start_learning": {
+            "total": 11.336806508999999,
+            "count": 1,
+            "self": 0.00015788799999860714,
+            "children": {
+                "TrainerController._reset_env": {
+                    "total": 11.062228779,
+                    "count": 1,
+                    "self": 11.062228779
+                },
+                "TrainerController._save_models": {
+                    "total": 0.27441984200000036,
+                    "count": 1,
+                    "self": 0.0014242530000014852,
+                    "children": {
+                        "RLTrainer._checkpoint": {
+                            "total": 0.2729955889999989,
+                            "count": 1,
+                            "self": 0.2729955889999989
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

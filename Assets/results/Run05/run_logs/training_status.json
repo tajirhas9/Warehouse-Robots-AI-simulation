@@ -1,0 +1,52 @@
+{
+    "RobotPathFinder": {
+        "checkpoints": [
+            {
+                "steps": 143570,
+                "file_path": "results/Run05/RobotPathFinder/RobotPathFinder-143570.onnx",
+                "reward": null,
+                "creation_time": 1606858243.567112
+            },
+            {
+                "steps": 499991,
+                "file_path": "results/Run05/RobotPathFinder/RobotPathFinder-499991.onnx",
+                "reward": 0.9204218563713579,
+                "creation_time": 1606875662.029045
+            },
+            {
+                "steps": 500004,
+                "file_path": "results/Run05/RobotPathFinder/RobotPathFinder-500004.onnx",
+                "reward": 0.9205522948209572,
+                "creation_time": 1606875662.1472142
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 500004,
+            "file_path": "results/Run05/RobotPathFinder.onnx",
+            "reward": 0.9205522948209572,
+            "creation_time": 1606875662.1472142
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.2.0",
+        "mlagents_version": "0.22.0",
+        "torch_version": "1.7.0",
+        "tensorflow_version": -1
+    },
+    "Robot Path Finder": {
+        "checkpoints": [
+            {
+                "steps": 0,
+                "file_path": "results/Run05/Robot Path Finder/Robot Path Finder-0.onnx",
+                "reward": null,
+                "creation_time": 1606885827.66946
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 0,
+            "file_path": "results/Run05/Robot Path Finder.onnx",
+            "reward": null,
+            "creation_time": 1606885827.66946
+        }
+    }
+}
