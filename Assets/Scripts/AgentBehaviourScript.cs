@@ -29,15 +29,41 @@ public class AgentBehaviourScript : MonoBehaviour
         if (collision.gameObject.tag == "Player") {
             Debug.Log("Collided with other players...");
    
-            brain.Penalize(-0.05f);
+            brain.Penalize(-0.075f);
+        } else if (collision.gameObject.tag == "Robot") {
+            Debug.Log("Collided with other robot...");
+
+            brain.Penalize(-0.075f);
         } else if(collision.gameObject.tag == "Goal") {
             Debug.Log("Reached goal!!!");
-
-            brain.GiveReward(1.0f);
 
             successCount++;
 
             successText.text = string.Format("{0}", successCount);
+
+            StartCoroutine(UpdateUIForSuccess());
         }
+    }
+
+    private IEnumerator UpdateUIForSuccess() {
+
+        Color originalColor = gameObject.GetComponent<Renderer>().material.color;
+        bool blink = false;
+
+        brain.waitToEndEpisode = true;
+
+        for (int i = 0; i <= 10; ++i) {
+            if(blink) {
+                gameObject.GetComponent<Renderer>().material.color = new Color(0f, 255f, 0f);
+            } else {
+                gameObject.GetComponent<Renderer>().material.color = originalColor;
+            }
+
+            blink = !blink;
+            yield return new WaitForSeconds(0.2f);
+
+        }
+        gameObject.GetComponent<Renderer>().material.color = originalColor;
+        brain.GiveReward(1.0f);
     }
 }

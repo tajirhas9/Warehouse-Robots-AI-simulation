@@ -19,6 +19,8 @@ public class PathFinderAgent : Agent {
 	private float speed = 10.0f;
 	[SerializeField]
 	private float stepAmount;
+	[SerializeField]
+	private float rotationTime;
 
 	[SerializeField]
 	private GameObject target;
@@ -30,6 +32,10 @@ public class PathFinderAgent : Agent {
 	private int direction = 0;
 	private float totalDistance;
 	private float previousDistance = 0f;
+	private bool doRotate;
+	private bool isRotationComplete;
+	private Vector3 rotationAngle;
+	public bool waitToEndEpisode;
 
 	public enum MoveToDirection {
 		Idle,
@@ -58,8 +64,17 @@ public class PathFinderAgent : Agent {
 		transform.localPosition = moveTo = new Vector3(Random.Range(-8f,8f), originalPosition.y, originalPosition.z);
 		target.transform.localPosition = new Vector3(Random.Range(-8f,8f),target.transform.localPosition.y, target.transform.localPosition.z);
 		transform.localRotation = Quaternion.identity;
-	//	GameObject.Find("Robot spawner").GetComponent<RobotSpawner>().DestroyEpisodeRobots();
-	//	GameObject.Find("Robot spawner").GetComponent<RobotSpawner>().Respawn();
+
+		moveToDirection = MoveToDirection.Forward;
+		moveInProgress = true;
+		moveTo = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + stepAmount);
+
+		doRotate = false;
+		isRotationComplete = false;
+		waitToEndEpisode = false;
+
+		GameObject.Find("Robot spawner").GetComponent<RobotSpawner>().DestroyEpisodeRobots();
+		GameObject.Find("Robot spawner").GetComponent<RobotSpawner>().Respawn();
 
 
 		totalDistance = Vector3.Distance(target.transform.localPosition, transform.localPosition);
@@ -78,27 +93,33 @@ public class PathFinderAgent : Agent {
 	}
 
 	public override void OnActionReceived(float[] vectorAction) {
-		if(moveInProgress)
+		if(moveInProgress || waitToEndEpisode)
 			return;
 		direction = Mathf.FloorToInt(vectorAction[0]);
 
         switch (direction) {
             case 0: // idle
-				moveTo = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z - stepAmount);
-				moveToDirection = MoveToDirection.Backward;
-				moveInProgress = true;
+		//		moveTo = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z - stepAmount);
+				moveToDirection = MoveToDirection.Idle;
+				moveInProgress = false;
 				break;
 			case 1: // left
                 moveTo = new Vector3(transform.localPosition.x - stepAmount, transform.localPosition.y, transform.localPosition.z);
                 moveToDirection = MoveToDirection.Left;
-				transform.Rotate(0f, -90f, 0f);
+				//		transform.Rotate(0f, -90f, 0f);
+				doRotate = true;
+				isRotationComplete = false;
 				moveInProgress = true;
+				rotationAngle = new Vector3(0f, -90f, 0f);
                 break;
             case 2: // right
                 moveTo = new Vector3(transform.localPosition.x + stepAmount, transform.localPosition.y, transform.localPosition.z);
                 moveToDirection = MoveToDirection.Right;
-				transform.Rotate(0f, 90f, 0f);
+				//		transform.Rotate(0f, 90f, 0f);
+				doRotate = true;
+				isRotationComplete = false;
 				moveInProgress = true;
+				rotationAngle = new Vector3(0f, 90f, 0f);
                 break;
             case 3: // forward
                 moveTo = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + stepAmount);
@@ -160,13 +181,24 @@ public class PathFinderAgent : Agent {
     }
 
     void Update() {
-		if(!moveInProgress)
+		if(!moveInProgress || waitToEndEpisode)
 			return;
 
-		transform.localPosition = Vector3.MoveTowards(transform.localPosition, moveTo, Time.deltaTime * speed);
+		if(doRotate) {
+			if(isRotationComplete) {
+				transform.localPosition = Vector3.MoveTowards(transform.localPosition, moveTo, Time.deltaTime * speed);
+			} else {
+				StartCoroutine(RotateMe(rotationAngle, rotationTime));
+				transform.rotation = Quaternion.Euler(transform.rotation.x, transform.rotation.y, 0f);
+			}
+		} else {
+			transform.localPosition = Vector3.MoveTowards(transform.localPosition, moveTo, Time.deltaTime * speed);
+		}
 
+		
 		if (Vector3.Distance(transform.localPosition, moveTo) <= 0.00001f) {
             moveInProgress = false;
+
 			float distanceRemain = Vector3.Distance(target.transform.localPosition, transform.localPosition);
 			float distanceCovered = totalDistance - distanceRemain;
 			float rewardPoint = (distanceCovered / totalDistance) * 0.001f;
@@ -175,12 +207,23 @@ public class PathFinderAgent : Agent {
 				AddReward(-(rewardPoint * 0.5f) );
 				UpdateUI();
 			} else {
-				AddReward(rewardPoint);
+				AddReward( (rewardPoint * 2.0f) );
 				UpdateUI();
 			}
 			previousDistance = distanceRemain;
 		}
     }
+
+	IEnumerator RotateMe(Vector3 byAngles, float inTime) {
+		var fromAngle = transform.rotation;
+		var toAngle = Quaternion.Euler(transform.eulerAngles + byAngles);
+		for (var t = 0f; t < 1; t += Time.deltaTime / inTime) {
+			transform.rotation = Quaternion.Slerp(fromAngle, toAngle, t);
+			yield return null;
+		}
+
+		isRotationComplete = true;
+	}
 }
 
 

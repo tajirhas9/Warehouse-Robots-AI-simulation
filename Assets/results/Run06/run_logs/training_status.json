@@ -1,0 +1,30 @@
+{
+    "Robot Path Finder": {
+        "checkpoints": [
+            {
+                "steps": 56317,
+                "file_path": "results/Run06/Robot Path Finder/Robot Path Finder-56317.onnx",
+                "reward": 0.06539229006934225,
+                "creation_time": 1607337537.905065
+            },
+            {
+                "steps": 61928,
+                "file_path": "results/Run06/Robot Path Finder/Robot Path Finder-61928.onnx",
+                "reward": 0.07429238264881635,
+                "creation_time": 1607337736.520142
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 61928,
+            "file_path": "results/Run06/Robot Path Finder.onnx",
+            "reward": 0.07429238264881635,
+            "creation_time": 1607337736.520142
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.2.0",
+        "mlagents_version": "0.22.0",
+        "torch_version": "1.7.0",
+        "tensorflow_version": -1
+    }
+}
